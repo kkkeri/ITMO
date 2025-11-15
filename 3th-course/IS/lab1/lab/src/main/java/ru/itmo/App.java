@@ -1,4 +1,4 @@
-package org.example;
+package ru.itmo;
 
 /**
  * Hello world!

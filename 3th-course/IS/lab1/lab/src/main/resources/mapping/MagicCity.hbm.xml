@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="ru.itmo.model">
+
+    <!-- Сущность MagicCity -->
+    <class name="MagicCity" table="magic_city">
+        <!-- id -->
+        <id name="id" column="id" type="long">
+            <generator class="identity"/>
+        </id>
+
+        <!-- name (not null, ограниченная длина) -->
+        <property name="name" column="name" type="string" not-null="true" length="150"/>
+
+        <!-- area (long > 0) -->
+        <property name="area" column="area" type="long" not-null="true"/>
+
+        <!-- population (long > 0) -->
+        <property name="population" column="population" type="long" not-null="true"/>
+
+        <!-- establishmentDate (может быть null) -->
+        <property name="establishmentDate" column="establishment_date" type="timestamp" not-null="false"/>
+
+        <!-- governor (enum, храним как строку) -->
+        <property name="governor" column="governor" type="string" not-null="false" length="20"/>
+
+        <!-- capital (boolean) -->
+        <property name="capital" column="capital" type="boolean" not-null="true"/>
+
+        <!-- populationDensity (double > 0) -->
+        <property name="populationDensity" column="population_density" type="double" not-null="true"/>
+    </class>
+
+</hibernate-mapping>
