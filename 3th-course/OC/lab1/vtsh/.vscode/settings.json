@@ -1,0 +1,22 @@
+{
+    "clangd.arguments": [
+        "-compile-commands-dir=./build",
+        "-header-insertion=never",
+        "--query-driver=/usr/bin/clang",
+        "--all-scopes-completion",
+        "--background-index"
+    ],
+    "C_Cpp.default.compilerPath": "/usr/bin/clang",
+    "C_Cpp.default.intelliSenseMode": "macos-clang-arm64",
+    "C_Cpp.default.includePath": [
+        "/usr/include",
+        "/usr/local/include",
+        "/Library/Developer/CommandLineTools/usr/include",
+        "${workspaceFolder}/lib",
+        "${workspaceFolder}"
+    ],
+    "files.eol": "\n",
+    "files.associations": {
+        "*.h": "c"
+    }
+}
