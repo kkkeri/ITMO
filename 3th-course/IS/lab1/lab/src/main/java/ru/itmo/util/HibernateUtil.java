@@ -20,8 +20,8 @@ public class HibernateUtil {
 
             // Добавляем mapping-файлы вручную (опционально, но надёжно)
             Metadata metadata = new MetadataSources(registry)
-                    .addResource("mapping/BookCreature.hbm.xml")
-                    .addResource("mapping/MagicCity.hbm.xml")
+                    .addResource("mapper/BookCreature.hbm.xml")
+                    .addResource("mapper/MagicCity.hbm.xml")
                     .getMetadataBuilder()
                     .build();
 

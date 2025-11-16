@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Book Creatures</title>
+</h:head>
+
+<h:body>
+    <h:form>
+
+        <!-- Фильтр по имени -->
+        <h:panelGrid columns="3" style="margin-bottom: 20px;">
+            <h:outputLabel value="Фильтр по имени:"/>
+            <h:inputText value="#{bookCreatureController.nameFilter}"/>
+            <h:commandButton value="Применить"
+                             action="#{bookCreatureController.applyNameFilter}"/>
+        </h:panelGrid>
+
+        <!-- Кнопка создания нового существа -->
+        <h:commandButton value="Создать новое существо"
+                         action="#{bookCreatureController.startCreate}"
+                         style="margin-bottom: 20px;"/>
+
+        <!-- Таблица существ -->
+        <h:dataTable value="#{bookCreatureController.creatures}" var="c"
+                     border="1" style="margin-top: 10px;">
+
+            <h:column>
+                <f:facet name="header">ID</f:facet>
+                #{c.id}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Имя</f:facet>
+                #{c.name}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Возраст</f:facet>
+                #{c.age}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Тип</f:facet>
+                #{c.creatureType}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Уровень атаки</f:facet>
+                #{c.attackLevel}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Город</f:facet>
+                #{c.creatureLocation != null ? c.creatureLocation.name : '—'}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Действия</f:facet>
+
+                <h:commandButton value="Редактировать"
+                                 action="#{bookCreatureController.startEdit(c.id)}"/>
+
+                <h:commandButton value="Удалить"
+                                 action="#{bookCreatureController.deleteCreature(c.id)}"
+                                 style="margin-left: 5px;"
+                                 onclick="return confirm('Удалить существо?');"/>
+            </h:column>
+        </h:dataTable>
+
+        <!-- Форма создания / редактирования -->
+        <h:panelGroup rendered="#{not empty bookCreatureController.editingCreature}">
+            <h:panelGrid columns="2" style="margin-top: 30px;">
+
+                <h:outputLabel value="Имя:"/>
+                <h:inputText value="#{bookCreatureController.editingCreature.name}" required="true"/>
+
+                <h:outputLabel value="Возраст:"/>
+                <h:inputText value="#{bookCreatureController.editingCreature.age}" required="true"/>
+
+                <h:outputLabel value="Уровень атаки:"/>
+                <h:inputText value="#{bookCreatureController.editingCreature.attackLevel}" required="true"/>
+
+                <h:outputLabel value="Тип существа:"/>
+                <h:selectOneMenu value="#{bookCreatureController.editingCreature.creatureType}">
+                    <f:selectItems value="#{bookCreatureController.creatureTypes}"
+                                   var="type"
+                                   itemValue="#{type}"
+                                   itemLabel="#{type}"/>
+                </h:selectOneMenu>
+
+                <h:outputLabel value="Город:"/>
+                <h:selectOneMenu value="#{bookCreatureController.selectedCityId}">
+                    <f:selectItem itemValue="#{null}" itemLabel="(без города)"/>
+                    <f:selectItems value="#{bookCreatureController.cities}"
+                                   var="city"
+                                   itemValue="#{city.id}"
+                                   itemLabel="#{city.name}"/>
+                </h:selectOneMenu>
+
+            </h:panelGrid>
+
+            <h:commandButton value="Сохранить"
+                             action="#{bookCreatureController.saveEditingCreature}"
+                             style="margin-top: 10px;"/>
+
+            <h:commandButton value="Отмена"
+                             action="#{bookCreatureController.cancelEditing}"
+                             immediate="true"
+                             style="margin-top: 10px; margin-left: 10px;"/>
+
+        </h:panelGroup>
+
+    </h:form>
+</h:body>
+</html>

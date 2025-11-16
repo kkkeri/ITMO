@@ -29,8 +29,8 @@
         <property name="hibernate.jdbc.time_zone">UTC</property>
 
         <!-- ===== Mapping-файлы ===== -->
-        <mapping resource="mapping/BookCreature.hbm.xml"/>
-        <mapping resource="mapping/MagicCity.hbm.xml"/>
+        <mapping resource="mapper/BookCreature.hbm.xml"/>
+        <mapping resource="mapper/MagicCity.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>
