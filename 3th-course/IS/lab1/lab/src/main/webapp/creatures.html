@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>BookCreatures</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="js/creatures.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>Существа (BookCreature)</h1>
+</header>
+
+<main>
+    <!-- Блок фильтра по имени -->
+    <div class="filter-block">
+        <label for="nameFilter">Фильтр по имени:</label>
+        <input id="nameFilter" type="text" placeholder="часть имени">
+        <button onclick="applyNameFilter()">Применить</button>
+        <button onclick="resetFilter()">Сбросить</button>
+    </div>
+
+    <!-- Кнопка создания нового существа -->
+    <div style="margin-top: 10px;">
+        <button class="primary" onclick="startCreate()">Создать новое существо</button>
+    </div>
+
+    <!-- Таблица существ -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Возраст</th>
+            <th>Тип</th>
+            <th>Уровень атаки</th>
+            <th>Город</th>
+            <th>Кольцо</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody id="creaturesTableBody">
+        <!-- строки будут добавляться JS-ом -->
+        </tbody>
+    </table>
+
+    <!-- Форма создания / редактирования -->
+    <section id="editSection" style="margin-top: 20px; display: none;">
+        <h2 id="editTitle">Новое существо</h2>
+
+        <div class="form-row">
+            <label for="creatureName">Имя:</label>
+            <input id="creatureName" type="text">
+        </div>
+
+        <div class="form-row">
+            <label for="creatureAge">Возраст:</label>
+            <input id="creatureAge" type="number" min="1">
+        </div>
+
+        <div class="form-row">
+            <label for="creatureType">Тип существа:</label>
+            <select id="creatureType">
+                <option value="HOBBIT">HOBBIT</option>
+                <option value="ELF">ELF</option>
+                <option value="HUMAN">HUMAN</option>
+                <option value="GOLLUM">GOLLUM</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label for="attackLevel">Уровень атаки:</label>
+            <input id="attackLevel" type="number" step="0.1" min="0.1">
+        </div>
+
+        <div class="form-row">
+            <label for="coordX">Коорд. X:</label>
+            <input id="coordX" type="number" step="0.01">
+        </div>
+
+        <div class="form-row">
+            <label for="coordY">Коорд. Y:</label>
+            <input id="coordY" type="number" step="0.01">
+        </div>
+
+        <div class="form-row">
+            <label for="cityId">ID города (может быть пусто):</label>
+            <input id="cityId" type="number" min="1">
+        </div>
+
+        <div class="form-row">
+            <label for="ringName">Имя кольца (может быть пусто):</label>
+            <input id="ringName" type="text">
+        </div>
+
+        <div class="form-row">
+            <label for="ringPower">Сила кольца (может быть пусто):</label>
+            <input id="ringPower" type="number" min="1">
+        </div>
+
+        <div style="margin-top: 10px;">
+            <button class="primary" onclick="saveCreature()">Сохранить</button>
+            <button onclick="cancelEdit()">Отмена</button>
+        </div>
+
+        <div id="formError" class="error" style="display: none;"></div>
+    </section>
+
+    <div id="globalError" class="error" style="display: none;"></div>
+</main>
+
+</body>
+</html>

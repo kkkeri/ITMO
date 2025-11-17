@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Специальные операции</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="js/special.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>Специальные операции</h1>
+</header>
+
+<main>
+
+    <nav style="margin-bottom: 15px;">
+        <a href="creatures.html">⟵ Существа</a>
+        |
+        <a href="cities.html">Города</a>
+    </nav>
+
+    <!-- Общая зона для ошибок / инфо -->
+    <div id="specialGlobalError" class="error" style="display:none;"></div>
+    <div id="specialGlobalInfo" class="info" style="display:none;"></div>
+
+    <!-- 1. Существо с максимальным name -->
+    <section class="card">
+        <h2>Существо с максимальным name</h2>
+        <p>Возвращает одно (любое) существо, у которого значение поля <code>name</code> максимальное.</p>
+        <button class="primary" id="btnMaxName">Найти</button>
+        <pre id="resultMaxName" class="result-block"></pre>
+    </section>
+
+    <!-- 2. Количество существ с ring.power < X -->
+    <section class="card">
+        <h2>Количество существ с кольцом слабее заданного</h2>
+        <p>Считает, сколько существ имеют кольцо, у которого сила <code>power</code> меньше указанного числа.</p>
+
+        <div class="form-row">
+            <label for="inputRingMaxPower">Максимальная сила кольца:</label>
+            <input id="inputRingMaxPower" type="number" min="1" step="1">
+        </div>
+
+        <button class="primary" id="btnCountRing">Посчитать</button>
+        <pre id="resultCountRing" class="result-block"></pre>
+    </section>
+
+    <!-- 3. Существа с attackLevel > X -->
+    <section class="card">
+        <h2>Существа с уровнем атаки выше заданного</h2>
+        <p>Возвращает массив существ, у которых <code>attackLevel</code> больше указанного значения.</p>
+
+        <div class="form-row">
+            <label for="inputMinAttack">Минимальный уровень атаки:</label>
+            <input id="inputMinAttack" type="number" min="0" step="0.1">
+        </div>
+
+        <button class="primary" id="btnAttackMore">Найти существ</button>
+        <pre id="resultAttackMore" class="result-block"></pre>
+    </section>
+
+    <!-- 4. Существо с самым сильным кольцом -->
+    <section class="card">
+        <h2>Персонаж с самым сильным кольцом</h2>
+        <p>Возвращает существо, у которого значение <code>ring.power</code> максимальное.</p>
+
+        <button class="primary" id="btnStrongestRing">Найти</button>
+        <pre id="resultStrongestRing" class="result-block"></pre>
+    </section>
+
+    <!-- 5. Уничтожить города эльфов -->
+    <section class="card">
+        <h2>Уничтожить города эльфов</h2>
+        <p>Удаляет все города, у которых <code>governor = ELF</code>. Перед удалением существа,
+            живущие в этих городах, должны быть отвязаны от них (в сервисе ты уже это делаешь).</p>
+
+        <button class="danger" id="btnDestroyElfCities">
+            Уничтожить города эльфов
+        </button>
+
+        <pre id="resultDestroyElfCities" class="result-block"></pre>
+    </section>
+
+</main>
+
+</body>
+</html>
