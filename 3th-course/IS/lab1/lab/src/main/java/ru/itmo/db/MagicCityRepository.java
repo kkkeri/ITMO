@@ -13,10 +13,6 @@ import java.util.Optional;
 @ApplicationScoped
 public class MagicCityRepository {
 
-    /**
-     * Сохранение нового города.
-     * Возвращает сгенерированный ID.
-     */
     public Long save(MagicCity city) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -30,9 +26,6 @@ public class MagicCityRepository {
         }
     }
 
-    /**
-     * Поиск города по id.
-     */
     public Optional<MagicCity> findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             MagicCity city = session.get(MagicCity.class, id);
@@ -42,9 +35,6 @@ public class MagicCityRepository {
         }
     }
 
-    /**
-     * Список всех городов (для выпадающих списков, таблиц и т.п.).
-     */
     public List<MagicCity> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM MagicCity", MagicCity.class)
@@ -54,9 +44,6 @@ public class MagicCityRepository {
         }
     }
 
-    /**
-     * Обновление города.
-     */
     public void update(MagicCity city) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -69,11 +56,6 @@ public class MagicCityRepository {
         }
     }
 
-    /**
-     * Удаление города по id.
-     * Логику перепривязки существ к другому городу
-     * будем делать в сервисе поверх этого репозитория.
-     */
     public void delete(Long id) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -89,10 +71,6 @@ public class MagicCityRepository {
         }
     }
 
-    /**
-     * Найти города по типу правителя (governor).
-     * Пригодится для операции "уничтожить города эльфов".
-     */
     public List<MagicCity> findByGovernor(BookCreatureType governorType) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(
@@ -105,9 +83,6 @@ public class MagicCityRepository {
         }
     }
 
-    /**
-     * Удалить пачку городов (удобно для "уничтожить города эльфов").
-     */
     public void deleteAll(List<MagicCity> cities) {
         if (cities == null || cities.isEmpty()) return;
 

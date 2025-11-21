@@ -1,6 +1,6 @@
-const SPECIAL_API = '/api/special';
+const SPECIAL_API = 'api/special';
 
-/* ===== общие хелперы ===== */
+// общие хелперы
 
 function showSpecialError(msg) {
     const el = document.getElementById('specialGlobalError');
@@ -25,12 +25,64 @@ function clearSpecialMessages() {
     document.getElementById('specialGlobalInfo').style.display = 'none';
 }
 
-/* небольшая функция для красивого вывода JSON */
-function pretty(obj) {
-    return JSON.stringify(obj, null, 2);
+// форматирование даты как на странице существ
+function formatCreationDate(raw) {
+    if (!raw) return '';
+    const noZone = raw.split('[')[0];        // отрезаем зону, если есть
+    const replaced = noZone.replace('T', ' ');
+    return replaced.substring(0, 16);        // до минут
 }
 
-/* ===== 1. Существо с максимальным name ===== */
+// красивый вывод
+
+function creatureToText(c) {
+    if (!c) return 'Нет данных';
+
+    const coords = c.coordinates
+        ? `x=${c.coordinates.x}, y=${c.coordinates.y}`
+        : 'нет';
+
+    const city = (c.creatureLocation && c.creatureLocation.name)
+        ? c.creatureLocation.name
+        : 'нет';
+
+    let ring = 'нет';
+    if (c.ring) {
+        const hasName = !!c.ring.name;
+        const hasPower = c.ring.power != null;
+        if (hasName && hasPower) {
+            ring = `${c.ring.name}, сила: ${c.ring.power}`;
+        } else if (hasName) {
+            ring = c.ring.name;
+        } else if (hasPower) {
+            ring = `сила: ${c.ring.power}`;
+        }
+    }
+
+    const creation = formatCreationDate(c.creationDate);
+
+    return [
+        `ID: ${c.id}`,
+        `Имя: ${c.name}`,
+        `Координаты: ${coords}`,
+        `Дата создания: ${creation}`,
+        `Возраст: ${c.age}`,
+        `Тип существа: ${c.creatureType}`,
+        `Город: ${city}`,
+        `Уровень атаки: ${c.attackLevel}`,
+        `Кольцо: ${ring}`
+    ].join('\n');
+}
+
+function creaturesListToText(list) {
+    if (!Array.isArray(list) || list.length === 0) {
+        return 'Существ не найдено';
+    }
+    // разделяем существ пустой строкой
+    return list.map(creatureToText).join('\n\n');
+}
+
+// существо с максимальным name
 
 async function fetchMaxName() {
     clearSpecialMessages();
@@ -49,13 +101,13 @@ async function fetchMaxName() {
             return;
         }
         const creature = await resp.json();
-        out.textContent = pretty(creature);
+        out.textContent = creatureToText(creature);
     } catch (e) {
         showSpecialError(e.message);
     }
 }
 
-/* ===== 2. Кол-во существ с ring.power < maxPower ===== */
+//кол-во существ с ring.power < maxPower
 
 async function fetchCountRing() {
     clearSpecialMessages();
@@ -87,7 +139,7 @@ async function fetchCountRing() {
     }
 }
 
-/* ===== 3. Существа с attackLevel > minAttack ===== */
+// существа с attackLevel > minAttack
 
 async function fetchAttackGreater() {
     clearSpecialMessages();
@@ -113,17 +165,13 @@ async function fetchAttackGreater() {
             return;
         }
         const list = await resp.json(); // массив BookCreature
-        if (!Array.isArray(list) || list.length === 0) {
-            out.textContent = 'Подходящих существ не найдено';
-        } else {
-            out.textContent = pretty(list);
-        }
+        out.textContent = creaturesListToText(list);
     } catch (e) {
         showSpecialError(e.message);
     }
 }
 
-/* ===== 4. Существо с самым сильным кольцом ===== */
+// существо с самым сильным кольцом
 
 async function fetchStrongestRing() {
     clearSpecialMessages();
@@ -142,13 +190,13 @@ async function fetchStrongestRing() {
             return;
         }
         const creature = await resp.json();
-        out.textContent = pretty(creature);
+        out.textContent = creatureToText(creature);
     } catch (e) {
         showSpecialError(e.message);
     }
 }
 
-/* ===== 5. Уничтожить города эльфов ===== */
+// уничтожить города эльфов
 
 async function destroyElfCities() {
     clearSpecialMessages();
@@ -181,7 +229,7 @@ async function destroyElfCities() {
     }
 }
 
-/* ===== навешиваем обработчики ===== */
+// обработчики
 
 window.addEventListener('load', () => {
     document.getElementById('btnMaxName')

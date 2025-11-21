@@ -2,7 +2,7 @@ package ru.itmo.model;
 
 public class Coordinates {
     private double x;
-    private Float y; // не может быть null
+    private Float y;
 
     public Coordinates() {}
 

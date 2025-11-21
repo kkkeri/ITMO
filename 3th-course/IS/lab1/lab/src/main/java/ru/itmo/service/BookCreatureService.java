@@ -9,8 +9,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Named("bookCreatureService")        // имя бина, если захотим инжектить по имени
-@ApplicationScoped                   // один инстанс на всё приложение
+@Named("bookCreatureService")
+@ApplicationScoped
 public class BookCreatureService {
 
     private final BookCreatureRepository creatureRepository = new BookCreatureRepository();
@@ -30,8 +30,14 @@ public class BookCreatureService {
         return creatureRepository.findAll();
     }
 
-    public void updateCreature(BookCreature creature) {
-        creatureRepository.update(creature);
+    public void updateCreature(BookCreature updated) {
+        BookCreature existing = creatureRepository.findById(updated.getId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Существо с id=" + updated.getId() + " не найдено"));
+        // сохраняем дату создания из БД
+        updated.setCreationDate(existing.getCreationDate());
+
+        creatureRepository.update(updated);
     }
 
     public void deleteCreature(Long id) {

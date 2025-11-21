@@ -1,13 +1,15 @@
 package ru.itmo.web;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.itmo.model.BookCreature;
 import ru.itmo.service.specialop.SpecialOperationsService;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,13 @@ import java.util.Map;
 public class SpecialOperationsServlet extends HttpServlet {
 
     private final SpecialOperationsService service = new SpecialOperationsService();
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
+
+    public SpecialOperationsServlet() {
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -41,10 +49,7 @@ public class SpecialOperationsServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Уничтожить города эльфов – это изменяющая операция,
-     * сделаем её через POST /api/special?op=destroyElfCities
-     */
+    // уничтожить города эльфов – это изменяющая операция
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String op = req.getParameter("op");

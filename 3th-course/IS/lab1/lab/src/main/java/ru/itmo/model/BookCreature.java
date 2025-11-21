@@ -2,18 +2,25 @@ package ru.itmo.model;
 
 import ru.itmo.model.util.BookCreatureType;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.ZonedDateTime;
 
 public class BookCreature {
-    private long id; // генерируется БД
-    private String name; // не null, не пустая
-    private Coordinates coordinates; // не null
-    private ZonedDateTime creationDate; // генерируется автоматически
-    private long age; // > 0
-    private BookCreatureType creatureType; // не null
-    private MagicCity creatureLocation; // может быть null
-    private Float attackLevel; // > 0
-    private Ring ring; // может быть null
+    private long id;
+    private String name;
+    private Coordinates coordinates;
+    private ZonedDateTime creationDate;
+    private long age;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "creature_type")
+    private BookCreatureType creatureType;
+
+    private MagicCity creatureLocation;
+    private Float attackLevel;
+    private Ring ring;
 
     public BookCreature() {}
 
@@ -26,7 +33,6 @@ public class BookCreature {
         this.creationDate = ZonedDateTime.now();
     }
 
-    // --- Getters / Setters с проверками ---
     public long getId() { return id; }
 
     public void setId(long id) {
@@ -49,7 +55,7 @@ public class BookCreature {
     }
 
     public ZonedDateTime getCreationDate() { return creationDate; }
-    // <-- добавлен публичный сеттер для Hibernate
+    // добавлен публичный сеттер для Hibernate
     public void setCreationDate(ZonedDateTime creationDate) {
         this.creationDate = creationDate;
     }

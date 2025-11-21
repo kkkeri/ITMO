@@ -13,12 +13,12 @@ public class HibernateUtil {
 
     private static SessionFactory buildSessionFactory() {
         try {
-            // Регистрируем конфигурацию Hibernate (hibernate.cfg.xml)
+            // регистрируем конфигурацию
             StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                     .configure("hibernate.cfg.xml") // Файл берётся из resources
                     .build();
 
-            // Добавляем mapping-файлы вручную (опционально, но надёжно)
+            // добавляем mapping-файлы вручную
             Metadata metadata = new MetadataSources(registry)
                     .addResource("mapper/BookCreature.hbm.xml")
                     .addResource("mapper/MagicCity.hbm.xml")

@@ -9,7 +9,7 @@ public class MagicCity {
     private Long area;
     private Long population;
     private ZonedDateTime establishmentDate;
-    private BookCreatureType governor; // может быть null
+    private BookCreatureType governor;
     private boolean capital;
     private double populationDensity;
 
@@ -50,7 +50,7 @@ public class MagicCity {
     }
 
     public ZonedDateTime getEstablishmentDate() { return establishmentDate; }
-    // <-- добавлен публичный сеттер для Hibernate
+    //добавлен публичный сеттер для Hibernate
     public void setEstablishmentDate(ZonedDateTime establishmentDate) {
         this.establishmentDate = establishmentDate;
     }

@@ -1,8 +1,8 @@
 package ru.itmo.model;
 
 public class Ring {
-    private String name; // не null, не пустая
-    private Integer power; // > 0
+    private String name;
+    private Integer power;
 
     public Ring() {}
 

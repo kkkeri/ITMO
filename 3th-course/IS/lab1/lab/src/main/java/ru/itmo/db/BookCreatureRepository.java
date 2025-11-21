@@ -12,26 +12,33 @@ import java.util.Optional;
 @ApplicationScoped
 public class BookCreatureRepository {
 
-    /**
-     * Сохранение нового существа.
-     * Возвращает сгенерированный ID.
-     */
     public Long save(BookCreature creature) {
+        Session session = null;
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
-            session.persist(creature);   // ID сгенерируется БД
+
+            session.persist(creature);   // генерация id бд
+
             tx.commit();
             return creature.getId();
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception ignored) {
+                    // игнорируем вторичную ошибку при rollback
+                }
+            }
             throw new RuntimeException("Ошибка при сохранении BookCreature", e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
-    /**
-     * Поиск по ID.
-     */
     public Optional<BookCreature> findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             BookCreature creature = session.get(BookCreature.class, id);
@@ -41,11 +48,8 @@ public class BookCreatureRepository {
         }
     }
 
-    /**
-     * Получить всех существ (без пагинации, просто список).
-     * Потом можно будет сделать вариант с page/pageSize.
-     */
-    public List<BookCreature> findAll() {
+
+    public List<BookCreature> findAll() { // получаем всех сущкств
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM BookCreature", BookCreature.class)
                     .getResultList();
@@ -54,45 +58,59 @@ public class BookCreatureRepository {
         }
     }
 
-    /**
-     * Обновление существующего объекта.
-     */
     public void update(BookCreature creature) {
+        Session session = null;
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
+
             session.merge(creature);
+
             tx.commit();
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            throw new RuntimeException("Ошибка при обновлении BookCreature с id=" + creature.getId(), e);
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception ignored) {}
+            }
+            throw new RuntimeException(
+                    "Ошибка при обновлении BookCreature с id=" + creature.getId(), e
+            );
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
-    /**
-     * Удаление существа по ID.
-     * Логику перепривязки связанных объектов (если понадобится)
-     * будем делать в сервисе, поверх этого репозитория.
-     */
     public void delete(Long id) {
+        Session session = null;
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
+
             BookCreature creature = session.get(BookCreature.class, id);
             if (creature != null) {
                 session.remove(creature);
             }
+
             tx.commit();
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
+            if (tx != null) {
+                try {
+                    tx.rollback();
+                } catch (Exception ignored) {}
+            }
             throw new RuntimeException("Ошибка при удалении BookCreature с id=" + id, e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 
-    /**
-     * Найти всех существ, живущих в конкретном городе (по id города).
-     * Это потом пригодится для перепривязки при удалении MagicCity.
-     */
     public List<BookCreature> findByCityId(Long cityId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(
@@ -105,10 +123,6 @@ public class BookCreatureRepository {
         }
     }
 
-    /**
-     * Пример: найти всех существ, у которых name содержит подстроку (для фильтрации).
-     * Можно будет использовать на главном экране для фильтрации по имени.
-     */
     public List<BookCreature> findByNameContains(String part) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(

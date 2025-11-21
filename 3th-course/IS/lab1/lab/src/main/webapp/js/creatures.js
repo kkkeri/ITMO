@@ -1,7 +1,20 @@
-const API_BASE = '/api/creatures'; // если контекст не корень, можно будет поменять
+const API_BASE = 'api/creatures';
 
+// полный список с сервера
 let creatures = [];
+// после фильтрации
+let filteredCreatures = [];
 let editingId = null; // null = создаём, число = редактируем
+
+// пагинация
+let creatureCurrentPage = 1;
+let creaturePageSize = 10;
+
+// текущее состояние сортировки
+let creatureSortField = null; // 'name', 'age', 'creatureType', 'city', 'ring', ...
+let creatureSortDir = 'asc';  // 'asc' | 'desc'
+
+// загрузка существ
 
 async function loadCreatures() {
     try {
@@ -10,31 +23,176 @@ async function loadCreatures() {
             throw new Error('Не удалось загрузить существ (код ' + resp.status + ')');
         }
         creatures = await resp.json();
-        renderTable(creatures);
         hideGlobalError();
+
+        // при загрузке сразу применяем текущие фильтры и сортировку
+        applyCreatureFilters();
     } catch (e) {
         showGlobalError(e.message);
     }
 }
 
+// сортировка
+
+function sortCreaturesBy(field) {
+    if (creatureSortField === field) {
+        // меняем направление
+        creatureSortDir = (creatureSortDir === 'asc') ? 'desc' : 'asc';
+    } else {
+        // выбираем новое поле сортировки
+        creatureSortField = field;
+        creatureSortDir = 'asc';
+    }
+    // просто перерисовываем с учётом новых настроек сортировки
+    renderTable(filteredCreatures);
+}
+
+function compareValues(a, b) {
+    if (a == null && b == null) return 0;
+    if (a == null) return -1;
+    if (b == null) return 1;
+
+    if (typeof a === 'string' && typeof b === 'string') {
+        return a.localeCompare(b, 'ru', { sensitivity: 'base' });
+    }
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+}
+
+// применяем сортировку к списку
+function sortCreatureList(list) {
+    if (!creatureSortField) return list;
+
+    const sorted = [...list];
+
+    sorted.sort((a, b) => {
+        let va, vb;
+        switch (creatureSortField) {
+            case 'id':
+                va = a.id; vb = b.id; break;
+            case 'name':
+                va = a.name; vb = b.name; break;
+            case 'age':
+                va = a.age; vb = b.age; break;
+            case 'creatureType':
+                va = a.creatureType; vb = b.creatureType; break;
+            case 'attackLevel':
+                va = a.attackLevel; vb = b.attackLevel; break;
+            case 'city':
+                va = a.creatureLocation ? a.creatureLocation.name : null;
+                vb = b.creatureLocation ? b.creatureLocation.name : null;
+                break;
+            case 'ring':
+                va = a.ring ? a.ring.name : null;
+                vb = b.ring ? b.ring.name : null;
+                break;
+            case 'creationDate':
+                va = a.creationDate;
+                vb = b.creationDate;
+                break;
+            default:
+                return 0;
+        }
+        return compareValues(va, vb);
+    });
+
+    if (creatureSortDir === 'desc') {
+        sorted.reverse();
+    }
+    return sorted;
+}
+
+// фильтр по name + type + ring.name
+
+function applyCreatureFilters() {
+    const nameVal = document.getElementById('nameFilter')?.value.trim().toLowerCase() || '';
+    const typeVal = document.getElementById('typeFilter')?.value || ''; // "" или HOBBIT/ELF/...
+    const ringVal = document.getElementById('ringFilter')?.value.trim().toLowerCase() || '';
+
+    filteredCreatures = creatures.filter(c => {
+        // имя
+        const matchesName = !nameVal ||
+            (c.name && c.name.toLowerCase().includes(nameVal));
+
+        // тип (enum, точное сравнение строки)
+        const matchesType = !typeVal ||
+            c.creatureType === typeVal;
+
+        // имя кольца
+        const ringName = (c.ring && c.ring.name) ? c.ring.name.toLowerCase() : '';
+        const matchesRing = !ringVal || ringName.includes(ringVal);
+
+        return matchesName && matchesType && matchesRing;
+    });
+
+    creatureCurrentPage = 1; // при смене фильтра всегда на первую страницу
+    renderTable(filteredCreatures);
+}
+
+function resetCreatureFilters() {
+    const nameInput = document.getElementById('nameFilter');
+    const typeSelect = document.getElementById('typeFilter');
+    const ringInput = document.getElementById('ringFilter');
+
+    if (nameInput) nameInput.value = '';
+    if (typeSelect) typeSelect.value = '';
+    if (ringInput) ringInput.value = '';
+
+    filteredCreatures = creatures.slice();
+    creatureCurrentPage = 1;
+    renderTable(filteredCreatures);
+}
+
+function reapplyFilterAndRender() {
+    applyCreatureFilters();
+}
+
+//отрисовка с пагинацией
+
 function renderTable(list) {
     const tbody = document.getElementById('creaturesTableBody');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
-    list.forEach(c => {
+    // применяем сортировку перед отрисовкой
+    const sorted = sortCreatureList(list);
+
+    // Пагинация
+    const total = sorted.length;
+    const totalPages = Math.max(1, Math.ceil(total / creaturePageSize));
+
+    if (creatureCurrentPage > totalPages) creatureCurrentPage = totalPages;
+    if (creatureCurrentPage < 1) creatureCurrentPage = 1;
+
+    const start = (creatureCurrentPage - 1) * creaturePageSize;
+    const end = start + creaturePageSize;
+    const pageItems = sorted.slice(start, end);
+
+    // Рисуем только элементы выбранной страницы
+    pageItems.forEach(c => {
         const tr = document.createElement('tr');
 
         const cityName = c.creatureLocation ? c.creatureLocation.name : '';
-        const ringStr = c.ring ? (c.ring.name + (c.ring.power ? ' (' + c.ring.power + ')' : '')) : '';
+        const ringStr = c.ring
+            ? (c.ring.name + (c.ring.power ? ' (' + c.ring.power + ')' : ''))
+            : '';
+        const creationStr = formatCreationDate(c.creationDate);
+
+        const xStr = c.coordinates ? c.coordinates.x : '';
+        const yStr = c.coordinates ? c.coordinates.y : '';
 
         tr.innerHTML = `
             <td>${c.id}</td>
             <td>${c.name}</td>
             <td>${c.age}</td>
+            <td>${xStr}</td>
+            <td>${yStr}</td>
             <td>${c.creatureType}</td>
             <td>${c.attackLevel}</td>
             <td>${cityName}</td>
             <td>${ringStr}</td>
+            <td>${creationStr}</td>
             <td>
                 <button onclick="startEdit(${c.id})">Редактировать</button>
                 <button class="danger" onclick="deleteCreature(${c.id})">Удалить</button>
@@ -42,26 +200,24 @@ function renderTable(list) {
         `;
         tbody.appendChild(tr);
     });
+
+    updateCreaturePaginationInfo(totalPages);
 }
 
-/* ====== Фильтр по имени ====== */
-
-function applyNameFilter() {
-    const value = document.getElementById('nameFilter').value.trim().toLowerCase();
-    if (!value) {
-        renderTable(creatures);
-        return;
+function updateCreaturePaginationInfo(totalPages) {
+    const info = document.getElementById('pageInfo');
+    if (info) {
+        info.textContent = `Страница ${creatureCurrentPage} из ${totalPages}`;
     }
-    const filtered = creatures.filter(c => c.name.toLowerCase().includes(value));
-    renderTable(filtered);
+
+    const prev = document.getElementById('prevPage');
+    const next = document.getElementById('nextPage');
+
+    if (prev) prev.disabled = creatureCurrentPage <= 1;
+    if (next) next.disabled = creatureCurrentPage >= totalPages;
 }
 
-function resetFilter() {
-    document.getElementById('nameFilter').value = '';
-    renderTable(creatures);
-}
-
-/* ====== Форма создания / редактирования ====== */
+// форма создания и редактирования
 
 function startCreate() {
     editingId = null;
@@ -85,7 +241,8 @@ function startEdit(id) {
     document.getElementById('coordY').value = creature.coordinates ? creature.coordinates.y : '';
     document.getElementById('cityId').value = creature.creatureLocation ? creature.creatureLocation.id : '';
     document.getElementById('ringName').value = creature.ring ? creature.ring.name : '';
-    document.getElementById('ringPower').value = creature.ring && creature.ring.power != null ? creature.ring.power : '';
+    document.getElementById('ringPower').value =
+        creature.ring && creature.ring.power != null ? creature.ring.power : '';
 
     hideFormError();
     showEditSection();
@@ -118,7 +275,14 @@ function cancelEdit() {
     clearForm();
 }
 
-/* ====== Сохранение ====== */
+function formatCreationDate(raw) {
+    if (!raw) return '';
+    const noZone = raw.split('[')[0];
+    const replaced = noZone.replace('T', ' ');
+    return replaced.substring(0, 16);
+}
+
+// сохранение
 
 async function saveCreature() {
     const name = document.getElementById('creatureName').value.trim();
@@ -190,14 +354,12 @@ async function saveCreature() {
     try {
         let resp;
         if (editingId == null) {
-            // создание
             resp = await fetch(API_BASE, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
         } else {
-            // обновление
             resp = await fetch(API_BASE + '?id=' + editingId, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
@@ -215,7 +377,6 @@ async function saveCreature() {
             return;
         }
 
-        // успех
         await loadCreatures();
         cancelEdit();
     } catch (e) {
@@ -223,7 +384,7 @@ async function saveCreature() {
     }
 }
 
-/* ====== Удаление ====== */
+// удаление
 
 async function deleteCreature(id) {
     if (!confirm('Удалить существо #' + id + '?')) return;
@@ -245,7 +406,7 @@ async function deleteCreature(id) {
     }
 }
 
-/* ====== Сообщения об ошибках ====== */
+// ошибки
 
 function showFormError(msg) {
     const el = document.getElementById('formError');
@@ -271,6 +432,55 @@ function hideGlobalError() {
     el.textContent = '';
 }
 
-/* ====== Автозагрузка при открытии страницы ====== */
+//автозагрузка + автообновление + пагинация
 
-window.addEventListener('load', loadCreatures);
+window.addEventListener('load', () => {
+    // Пагинация
+    const prev = document.getElementById('prevPage');
+    const next = document.getElementById('nextPage');
+    const select = document.getElementById('pageSizeSelect');
+
+    if (prev) {
+        prev.addEventListener('click', () => {
+            if (creatureCurrentPage > 1) {
+                creatureCurrentPage--;
+                renderTable(filteredCreatures);
+            }
+        });
+    }
+
+    if (next) {
+        next.addEventListener('click', () => {
+            const total = filteredCreatures.length;
+            const totalPages = Math.max(1, Math.ceil(total / creaturePageSize));
+            if (creatureCurrentPage < totalPages) {
+                creatureCurrentPage++;
+                renderTable(filteredCreatures);
+            }
+        });
+    }
+
+    if (select) {
+        select.addEventListener('change', e => {
+            const val = parseInt(e.target.value, 10);
+            creaturePageSize = Number.isFinite(val) && val > 0 ? val : 10;
+            creatureCurrentPage = 1;
+            renderTable(filteredCreatures);
+        });
+    }
+
+    loadCreatures();
+
+    // автообновление
+    setInterval(() => {
+        const editSection = document.getElementById('editSection');
+
+        // если модалка/форма редактирования открыта - не трогаем
+        if (editSection && editSection.style.display !== 'none') {
+            return;
+        }
+
+        // иначе просто подгружаем актуальные данные с сервера
+        loadCreatures();
+    }, 5000);
+});

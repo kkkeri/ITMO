@@ -5,32 +5,33 @@
 
 <hibernate-mapping package="ru.itmo.model">
 
-    <!-- Сущность MagicCity -->
     <class name="MagicCity" table="magic_city">
         <!-- id -->
         <id name="id" column="id" type="long">
             <generator class="identity"/>
         </id>
 
-        <!-- name (not null, ограниченная длина) -->
         <property name="name" column="name" type="string" not-null="true" length="150"/>
 
-        <!-- area (long > 0) -->
         <property name="area" column="area" type="long" not-null="true"/>
 
-        <!-- population (long > 0) -->
         <property name="population" column="population" type="long" not-null="true"/>
 
-        <!-- establishmentDate (может быть null) -->
-        <property name="establishmentDate" column="establishment_date" type="timestamp" not-null="false"/>
+        <property name="establishmentDate"
+                  column="establishment_date"
+                  type="org.hibernate.type.ZonedDateTimeType"
+                  not-null="false"/>
 
-        <!-- governor (enum, храним как строку) -->
-        <property name="governor" column="governor" type="string" not-null="false" length="20"/>
+        <!-- enum так же, как creatureType -->
+        <property name="governor" column="governor" not-null="false" length="20">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">ru.itmo.model.util.BookCreatureType</param>
+                <param name="useNamed">true</param>
+            </type>
+        </property>
 
-        <!-- capital (boolean) -->
         <property name="capital" column="capital" type="boolean" not-null="true"/>
 
-        <!-- populationDensity (double > 0) -->
         <property name="populationDensity" column="population_density" type="double" not-null="true"/>
     </class>
 
