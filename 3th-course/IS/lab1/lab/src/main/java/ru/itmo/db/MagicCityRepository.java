@@ -28,7 +28,8 @@ public class MagicCityRepository {
 
     public Optional<MagicCity> findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            MagicCity city = session.get(MagicCity.class, id);
+            // Hibernate 6: find вместо get
+            MagicCity city = session.find(MagicCity.class, id);
             return Optional.ofNullable(city);
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при поиске MagicCity по id=" + id, e);
@@ -60,10 +61,13 @@ public class MagicCityRepository {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-            MagicCity city = session.get(MagicCity.class, id);
+
+            // Hibernate 6: find вместо get
+            MagicCity city = session.find(MagicCity.class, id);
             if (city != null) {
                 session.remove(city);
             }
+
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
@@ -90,7 +94,8 @@ public class MagicCityRepository {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
             for (MagicCity city : cities) {
-                MagicCity managed = session.get(MagicCity.class, city.getId());
+                // И здесь: find вместо get
+                MagicCity managed = session.find(MagicCity.class, city.getId());
                 if (managed != null) {
                     session.remove(managed);
                 }

@@ -8,9 +8,9 @@
 
         <!-- ===== PostgreSQL connection (локально) ===== -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/lab1</property>
-        <property name="hibernate.connection.username">itmo_user</property>
-        <property name="hibernate.connection.password">12345</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/studs</property>
+        <property name="hibernate.connection.username">s412982</property>
+        <property name="hibernate.connection.password">i3uM6yY4muOTKv1W</property>
 
         <!-- ===== Connection pool (C3P0) ===== -->
         <property name="hibernate.c3p0.min_size">5</property>

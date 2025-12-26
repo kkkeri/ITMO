@@ -9,8 +9,8 @@
 /Users/egorkudias/IdeaProjects/ITMO/3th-course/IS/lab1/lab/src/main/java/ru/itmo/model/util/BookCreatureType.java
 /Users/egorkudias/IdeaProjects/ITMO/3th-course/IS/lab1/lab/src/main/java/ru/itmo/service/BookCreatureService.java
 /Users/egorkudias/IdeaProjects/ITMO/3th-course/IS/lab1/lab/src/main/java/ru/itmo/service/MagicCityService.java
-/Users/egorkudias/IdeaProjects/ITMO/3th-course/IS/lab1/lab/src/main/java/ru/itmo/service/specialop/SpecialOperationsService.java
 /Users/egorkudias/IdeaProjects/ITMO/3th-course/IS/lab1/lab/src/main/java/ru/itmo/util/HibernateUtil.java
+/Users/egorkudias/IdeaProjects/ITMO/3th-course/IS/lab1/lab/src/main/java/ru/itmo/web/AppInitializer.java
 /Users/egorkudias/IdeaProjects/ITMO/3th-course/IS/lab1/lab/src/main/java/ru/itmo/web/BookCreatureServlet.java
 /Users/egorkudias/IdeaProjects/ITMO/3th-course/IS/lab1/lab/src/main/java/ru/itmo/web/MagicCityServlet.java
 /Users/egorkudias/IdeaProjects/ITMO/3th-course/IS/lab1/lab/src/main/java/ru/itmo/web/SpecialOperationsServlet.java

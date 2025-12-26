@@ -13,7 +13,7 @@
 </header>
 
 <main>
-    <!-- Фильтр по названию города -->
+    <!-- фильтр по названию города -->
     <div class="filter-block">
         <label for="cityNameFilter">Название:</label>
         <input id="cityNameFilter" type="text" placeholder="часть названия города">
@@ -25,12 +25,12 @@
         <button onclick="resetCityFilter()">Сбросить</button>
     </div>
 
-    <!-- Кнопка создания нового города -->
+    <!-- кнопка создания нового города -->
     <div style="margin-top: 10px;">
         <button class="primary" onclick="startCreateCity()">Создать новый город</button>
     </div>
 
-    <!-- Таблица городов -->
+    <!-- таблица городов -->
     <table>
         <thead>
         <tr>
@@ -49,7 +49,7 @@
         </tbody>
     </table>
 
-    <!-- Пагинация -->
+    <!-- пагинация -->
     <div class="pagination">
         <button id="cityPrevPage">Назад</button>
         <span id="cityPageInfo">Страница 1 из 1</span>
@@ -66,8 +66,8 @@
         </label>
     </div>
 
-    <!-- Форма создания / редактирования города -->
-    <!-- Модальное окно создания / редактирования города -->
+    <!-- форма создания / редактирования города -->
+    <!-- модальное окно создания / редактирования города -->
     <div id="cityEditSection" class="modal-overlay" style="display: none;">
 
         <div class="modal-window">
@@ -75,7 +75,7 @@
 
             <div class="form-row">
                 <label for="cityName">Название:</label>
-                <input id="cityName" type="text">
+                <input id="cityName" type="text" maxlength="80">
             </div>
 
             <div class="form-row">
@@ -106,7 +106,6 @@
             <div class="form-row">
                 <label for="cityGovernor">Губернатор (тип существа):</label>
                 <input id="cityGovernor" type="text" placeholder="ELF / HUMAN / ...">
-                <!-- если у тебя тут <select>, оставь <select>, главное — id="cityGovernor" -->
             </div>
 
             <div style="margin-top: 12px; text-align: right;">
@@ -119,7 +118,7 @@
 
     </div>
 
-    <!-- Блок удаления с перепривязкой существ -->
+    <!-- блок удаления с перепривязкой существ -->
     <section id="cityDeleteSection" style="margin-top: 20px; display: none;">
         <h2>Удаление города с перепривязкой существ</h2>
 
@@ -132,7 +131,6 @@
             <label for="reassignCityId">Перепривязать существ к городу:</label>
             <select id="reassignCityId">
                 <option value="">(оставить без города)</option>
-                <!-- остальные города подставим из JS -->
             </select>
         </div>
 

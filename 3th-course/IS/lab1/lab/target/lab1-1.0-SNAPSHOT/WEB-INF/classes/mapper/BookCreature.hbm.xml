@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="ru.itmo.model">
 
-    <!-- Главная таблица для BookCreature -->
+    <!-- главная таблица для BookCreature -->
     <class name="BookCreature" table="book_creature">
 
         <!-- id (генерируется автоматически, > 0, уникальный) -->
@@ -16,13 +16,13 @@
         <!-- name (строка, не null, не пустая) -->
         <property name="name" column="name" not-null="true" length="100"/>
 
-        <!-- coordinates (встроенный компонент, без отдельной таблицы) -->
+        <!-- coordinates (делаем встроенным компонентом) -->
         <component name="coordinates" class="Coordinates">
             <property name="x" column="coord_x" type="double"/>
             <property name="y" column="coord_y" type="float" not-null="true"/>
         </component>
 
-        <!-- creationDate (дата создания, не null, генерируется автоматически в коде) -->
+        <!-- creationDate (дата создания, не null, генерируется автоматически) -->
         <property name="creationDate" column="creation_date" type="org.hibernate.type.ZonedDateTimeType" not-null="true"/>
 
         <!-- age (long > 0, не null) -->
@@ -48,7 +48,7 @@
         <!-- attackLevel (float > 0, не null) -->
         <property name="attackLevel" column="attack_level" type="float" not-null="true"/>
 
-        <!-- ring (встроенный компонент, может быть null) -->
+        <!-- ring (делаем встроенным компонентом, может быть null) -->
         <component name="ring" class="Ring">
             <property name="name" column="ring_name" not-null="false" length="80"/>
             <property name="power" column="ring_power" type="integer" not-null="false"/>

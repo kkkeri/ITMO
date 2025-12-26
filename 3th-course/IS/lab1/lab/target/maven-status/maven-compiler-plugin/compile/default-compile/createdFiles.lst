@@ -3,6 +3,7 @@ ru/itmo/web/BookCreatureServlet.class
 ru/itmo/service/BookCreatureService.class
 ru/itmo/TestDB.class
 ru/itmo/util/HibernateUtil.class
+ru/itmo/web/AppInitializer.class
 ru/itmo/model/util/BookCreatureType.class
 ru/itmo/service/MagicCityService.class
 ru/itmo/model/MagicCity.class
@@ -13,4 +14,3 @@ ru/itmo/db/MagicCityRepository.class
 ru/itmo/model/Coordinates.class
 ru/itmo/web/MagicCityServlet.class
 ru/itmo/db/BookCreatureRepository.class
-ru/itmo/service/specialop/SpecialOperationsService.class

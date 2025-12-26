@@ -42,8 +42,12 @@ public class BookCreature {
 
     public String getName() { return name; }
     public void setName(String name) {
-        if (name == null || name.trim().isEmpty())
+        if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Имя не может быть пустым");
+        }
+        if (name.length() > 80) {
+            throw new IllegalArgumentException("Имя не должно быть длиннее 80 символов");
+        }
         this.name = name;
     }
 
@@ -78,8 +82,9 @@ public class BookCreature {
 
     public Float getAttackLevel() { return attackLevel; }
     public void setAttackLevel(Float attackLevel) {
-        if (attackLevel == null || attackLevel <= 0)
-            throw new IllegalArgumentException("Уровень атаки должен быть > 0");
+        if (attackLevel == null || attackLevel <= 0 || attackLevel > 100) {
+            throw new IllegalArgumentException("Уровень атаки должен быть больше 0 и не более 100");
+        }
         this.attackLevel = attackLevel;
     }
 

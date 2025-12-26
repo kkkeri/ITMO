@@ -1,6 +1,6 @@
 const SPECIAL_API = 'api/special';
 
-/* ===== общие хелперы ===== */
+// общие хелперы
 
 function showSpecialError(msg) {
     const el = document.getElementById('specialGlobalError');
@@ -25,7 +25,7 @@ function clearSpecialMessages() {
     document.getElementById('specialGlobalInfo').style.display = 'none';
 }
 
-/* форматирование даты как на странице существ */
+// форматирование даты как на странице существ
 function formatCreationDate(raw) {
     if (!raw) return '';
     const noZone = raw.split('[')[0];        // отрезаем зону, если есть
@@ -33,7 +33,7 @@ function formatCreationDate(raw) {
     return replaced.substring(0, 16);        // до минут
 }
 
-/* ===== ЧЕЛОВЕЧЕСКИЙ ВЫВОД СУЩЕСТ ===== */
+// красивый вывод
 
 function creatureToText(c) {
     if (!c) return 'Нет данных';
@@ -82,7 +82,7 @@ function creaturesListToText(list) {
     return list.map(creatureToText).join('\n\n');
 }
 
-/* ===== 1. Существо с максимальным name ===== */
+// существо с максимальным name
 
 async function fetchMaxName() {
     clearSpecialMessages();
@@ -107,7 +107,7 @@ async function fetchMaxName() {
     }
 }
 
-/* ===== 2. Кол-во существ с ring.power < maxPower ===== */
+//кол-во существ с ring.power < maxPower
 
 async function fetchCountRing() {
     clearSpecialMessages();
@@ -139,7 +139,7 @@ async function fetchCountRing() {
     }
 }
 
-/* ===== 3. Существа с attackLevel > minAttack ===== */
+// существа с attackLevel > minAttack
 
 async function fetchAttackGreater() {
     clearSpecialMessages();
@@ -171,7 +171,7 @@ async function fetchAttackGreater() {
     }
 }
 
-/* ===== 4. Существо с самым сильным кольцом ===== */
+// существо с самым сильным кольцом
 
 async function fetchStrongestRing() {
     clearSpecialMessages();
@@ -196,7 +196,7 @@ async function fetchStrongestRing() {
     }
 }
 
-/* ===== 5. Уничтожить города эльфов ===== */
+// уничтожить города эльфов
 
 async function destroyElfCities() {
     clearSpecialMessages();
@@ -229,7 +229,7 @@ async function destroyElfCities() {
     }
 }
 
-/* ===== навешиваем обработчики ===== */
+// обработчики
 
 window.addEventListener('load', () => {
     document.getElementById('btnMaxName')

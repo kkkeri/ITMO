@@ -14,7 +14,7 @@ let creaturePageSize = 10;
 let creatureSortField = null; // 'name', 'age', 'creatureType', 'city', 'ring', ...
 let creatureSortDir = 'asc';  // 'asc' | 'desc'
 
-/* ====== Загрузка существ ====== */
+// ================= Загрузка существ =================
 
 async function loadCreatures() {
     try {
@@ -25,25 +25,21 @@ async function loadCreatures() {
         creatures = await resp.json();
         hideGlobalError();
 
-        // при загрузке сразу применяем текущие фильтры и сортировку
         applyCreatureFilters();
     } catch (e) {
         showGlobalError(e.message);
     }
 }
 
-/* ====== Сортировка ====== */
+// ================= Сортировка =================
 
 function sortCreaturesBy(field) {
     if (creatureSortField === field) {
-        // меняем направление
         creatureSortDir = (creatureSortDir === 'asc') ? 'desc' : 'asc';
     } else {
-        // выбираем новое поле сортировки
         creatureSortField = field;
         creatureSortDir = 'asc';
     }
-    // просто переотрисовываем с учётом новых настроек сортировки
     renderTable(filteredCreatures);
 }
 
@@ -60,7 +56,6 @@ function compareValues(a, b) {
     return 0;
 }
 
-// применяем сортировку к списку
 function sortCreatureList(list) {
     if (!creatureSortField) return list;
 
@@ -103,30 +98,27 @@ function sortCreatureList(list) {
     return sorted;
 }
 
-/* ====== Фильтр по name + type + ring.name ====== */
+// ================= Фильтры =================
 
 function applyCreatureFilters() {
     const nameVal = document.getElementById('nameFilter')?.value.trim().toLowerCase() || '';
-    const typeVal = document.getElementById('typeFilter')?.value || ''; // "" или HOBBIT/ELF/...
+    const typeVal = document.getElementById('typeFilter')?.value || '';
     const ringVal = document.getElementById('ringFilter')?.value.trim().toLowerCase() || '';
 
     filteredCreatures = creatures.filter(c => {
-        // имя
         const matchesName = !nameVal ||
             (c.name && c.name.toLowerCase().includes(nameVal));
 
-        // тип (enum, точное сравнение строки)
         const matchesType = !typeVal ||
             c.creatureType === typeVal;
 
-        // имя кольца
         const ringName = (c.ring && c.ring.name) ? c.ring.name.toLowerCase() : '';
         const matchesRing = !ringVal || ringName.includes(ringVal);
 
         return matchesName && matchesType && matchesRing;
     });
 
-    creatureCurrentPage = 1; // при смене фильтра всегда на первую страницу
+    creatureCurrentPage = 1;
     renderTable(filteredCreatures);
 }
 
@@ -148,17 +140,15 @@ function reapplyFilterAndRender() {
     applyCreatureFilters();
 }
 
-/* ====== Отрисовка таблицы с пагинацией ====== */
+// ================= Отрисовка с пагинацией =================
 
 function renderTable(list) {
     const tbody = document.getElementById('creaturesTableBody');
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    // применяем сортировку перед отрисовкой
     const sorted = sortCreatureList(list);
 
-    // Пагинация
     const total = sorted.length;
     const totalPages = Math.max(1, Math.ceil(total / creaturePageSize));
 
@@ -169,7 +159,6 @@ function renderTable(list) {
     const end = start + creaturePageSize;
     const pageItems = sorted.slice(start, end);
 
-    // Рисуем только элементы выбранной страницы
     pageItems.forEach(c => {
         const tr = document.createElement('tr');
 
@@ -217,7 +206,7 @@ function updateCreaturePaginationInfo(totalPages) {
     if (next) next.disabled = creatureCurrentPage >= totalPages;
 }
 
-/* ====== Форма создания / редактирования ====== */
+// ================= Форма создания / редактирования =================
 
 function startCreate() {
     editingId = null;
@@ -282,62 +271,115 @@ function formatCreationDate(raw) {
     return replaced.substring(0, 16);
 }
 
-/* ====== Сохранение ====== */
+// ================= Сохранение =================
 
 async function saveCreature() {
     const name = document.getElementById('creatureName').value.trim();
-    const age = parseInt(document.getElementById('creatureAge').value, 10);
+    const ageRaw = document.getElementById('creatureAge').value.trim();
     const type = document.getElementById('creatureType').value;
-    const attack = parseFloat(document.getElementById('attackLevel').value);
-    const x = parseFloat(document.getElementById('coordX').value);
-    const yStr = document.getElementById('coordY').value;
-    const cityIdStr = document.getElementById('cityId').value;
+    const attackRaw = document.getElementById('attackLevel').value.trim();
+    const xRaw = document.getElementById('coordX').value.trim();
+    const yRaw = document.getElementById('coordY').value.trim();
+    const cityIdStr = document.getElementById('cityId').value.trim();
     const ringName = document.getElementById('ringName').value.trim();
-    const ringPowerStr = document.getElementById('ringPower').value;
+    const ringPowerStr = document.getElementById('ringPower').value.trim();
 
+    // --- Имя ---
     if (!name) {
         showFormError('Имя не может быть пустым');
         return;
     }
-    if (!Number.isFinite(age) || age <= 0) {
-        showFormError('Возраст должен быть положительным числом');
+    if (name.length > 80) {
+        showFormError('Имя не должно быть длиннее 80 символов');
         return;
     }
-    if (!Number.isFinite(attack) || attack <= 0) {
-        showFormError('Уровень атаки должен быть положительным числом');
+
+    // --- Возраст ---
+    if (!ageRaw) {
+        showFormError('Возраст обязателен');
         return;
     }
-    if (!yStr) {
+    const age = parseInt(ageRaw, 10);
+    if (!Number.isFinite(age) || age <= 0 || !Number.isInteger(age)) {
+        showFormError('Возраст должен быть положительным целым числом');
+        return;
+    }
+
+    // --- Уровень атаки ---
+    if (!attackRaw) {
+        showFormError('Уровень атаки обязателен');
+        return;
+    }
+    const attack = parseFloat(attackRaw);
+    if (!Number.isFinite(attack) || attack <= 0 || attack > 100) {
+        showFormError('Уровень атаки должен быть числом от 0 до 100');
+        return;
+    }
+
+    // --- Координата Y (обязательна) ---
+    if (!yRaw) {
         showFormError('Координата Y обязательна');
         return;
     }
-    const y = parseFloat(yStr);
+    const y = parseFloat(yRaw);
+    if (!Number.isFinite(y)) {
+        showFormError('Координата Y должна быть числом');
+        return;
+    }
+
+    // --- Координата X (может быть пустой) ---
+    let x = null;
+    if (xRaw) {
+        x = parseFloat(xRaw);
+        if (!Number.isFinite(x)) {
+            showFormError('Координата X должна быть числом');
+            return;
+        }
+    }
 
     const coordinates = {
-        x: Number.isFinite(x) ? x : 0,
+        x: x,
         y: y
     };
 
+    // --- Город ---
     let creatureLocation = null;
     if (cityIdStr) {
         const cityId = parseInt(cityIdStr, 10);
-        if (!Number.isFinite(cityId) || cityId <= 0) {
-            showFormError('ID города должен быть положительным числом');
+        if (!Number.isFinite(cityId) || cityId <= 0 || !Number.isInteger(cityId)) {
+            showFormError('ID города должен быть положительным целым числом');
             return;
         }
         creatureLocation = { id: cityId };
     }
 
+    // --- Кольцо ---
     let ring = null;
     if (ringName) {
+        if (ringName.length > 80) {
+            showFormError('Имя кольца не должно быть длиннее 80 символов');
+            return;
+        }
         ring = { name: ringName };
+
         if (ringPowerStr) {
             const power = parseInt(ringPowerStr, 10);
-            if (!Number.isFinite(power) || power <= 0) {
-                showFormError('Сила кольца должна быть положительным числом');
+            if (
+                !Number.isFinite(power) ||
+                !Number.isInteger(power) ||
+                power <= 0 ||
+                power > 100
+            ) {
+                showFormError('Сила кольца должна быть целым числом от 1 до 100');
                 return;
             }
             ring.power = power;
+        }
+    } else {
+        // если сила введена, а имени нет — это ошибка
+        if (ringPowerStr) {
+            showFormError('Сначала введите имя кольца, затем его силу');
+            return;
         }
     }
 
@@ -384,7 +426,7 @@ async function saveCreature() {
     }
 }
 
-/* ====== Удаление ====== */
+// ================= Удаление =================
 
 async function deleteCreature(id) {
     if (!confirm('Удалить существо #' + id + '?')) return;
@@ -406,7 +448,7 @@ async function deleteCreature(id) {
     }
 }
 
-/* ====== Сообщения об ошибках ====== */
+// ================= Ошибки =================
 
 function showFormError(msg) {
     const el = document.getElementById('formError');
@@ -432,10 +474,9 @@ function hideGlobalError() {
     el.textContent = '';
 }
 
-/* ====== Автозагрузка + автообновление + пагинация ====== */
+// ================= Автозагрузка + пагинация =================
 
 window.addEventListener('load', () => {
-    // Пагинация (кнопки и селект)
     const prev = document.getElementById('prevPage');
     const next = document.getElementById('nextPage');
     const select = document.getElementById('pageSizeSelect');
@@ -469,19 +510,15 @@ window.addEventListener('load', () => {
         });
     }
 
-    // первый раз загружаем сразу
     loadCreatures();
 
-    // каждые 5 секунд пробуем обновить список
     setInterval(() => {
         const editSection = document.getElementById('editSection');
 
-        // если модалка/форма редактирования открыта - не трогаем
         if (editSection && editSection.style.display !== 'none') {
             return;
         }
 
-        // иначе просто подгружаем актуальные данные с сервера
         loadCreatures();
-    }, 5000); // 5000 мс = 5 секунд
+    }, 5000);
 });

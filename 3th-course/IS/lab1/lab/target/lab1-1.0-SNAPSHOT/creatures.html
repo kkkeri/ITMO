@@ -13,7 +13,7 @@
 </header>
 
 <main>
-    <!-- Фильтр по нескольким строковым полям -->
+    <!-- фильтр по нескольким строковым полям -->
     <div class="filter-block">
         <label for="nameFilter">Имя:</label>
         <input id="nameFilter" type="text" placeholder="часть имени">
@@ -36,12 +36,12 @@
         <button onclick="resetCreatureFilters()">Сбросить</button>
     </div>
 
-    <!-- Кнопка создания нового существа -->
+    <!-- кнопка создания нового существа -->
     <div style="margin-top: 10px;">
         <button class="primary" onclick="startCreate()">Создать новое существо</button>
     </div>
 
-    <!-- Таблица существ -->
+    <!-- таблица существ -->
     <table>
         <thead>
         <tr>
@@ -59,11 +59,10 @@
         </tr>
         </thead>
         <tbody id="creaturesTableBody">
-        <!-- строки будут добавляться JS-ом -->
         </tbody>
     </table>
 
-    <!-- PAGINATION -->
+    <!-- пагинация -->
     <div class="pagination">
         <button id="prevPage">Назад</button>
         <span id="pageInfo">Страница 1 из 1</span>
@@ -80,8 +79,8 @@
         </label>
     </div>
 
-    <!-- Форма создания / редактирования -->
-    <!-- Модальное окно создания / редактирования существа -->
+    <!-- форма создания / редактирования -->
+    <!-- модальное окно создания / редактирования существа -->
     <div id="editSection" class="modal-overlay" style="display: none;">
 
         <div class="modal-window">
@@ -89,7 +88,7 @@
 
             <div class="form-row">
                 <label for="creatureName">Имя:</label>
-                <input id="creatureName" type="text">
+                <input id="creatureName" type="text" maxlength="80">
             </div>
 
             <div class="form-row">
@@ -129,7 +128,7 @@
 
             <div class="form-row">
                 <label for="ringName">Имя кольца (может быть пусто):</label>
-                <input id="ringName" type="text">
+                <input id="ringName" type="text" maxlength="80">
             </div>
 
             <div class="form-row">

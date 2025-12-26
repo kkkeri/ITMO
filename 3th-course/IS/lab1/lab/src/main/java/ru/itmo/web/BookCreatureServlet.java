@@ -75,16 +75,26 @@ public class BookCreatureServlet extends HttpServlet {
             resp.getWriter().write("{\"id\":" + id + "}");
 
         } catch (IllegalArgumentException e) {
-            // проверки из модели/сервиса
-            e.printStackTrace();
+            // наши бизнес-проверки
             sendError(resp, 400, e.getMessage());
+
         } catch (Exception e) {
-            // выводим полную причину, нужна для исправления ошибок(позде надо исправить)
-            e.printStackTrace();
-            String msg = "Некорректные данные существа: "
-                    + e.getClass().getSimpleName()
-                    + " - " + (e.getMessage() != null ? e.getMessage() : "(no message)");
-            sendError(resp, 400, msg);
+            // здесь ловим всё остальное и проверяем, нет ли внутри NumberFormatException
+            Throwable cause = e;
+            boolean numberFormat = false;
+            while (cause != null) {
+                if (cause instanceof NumberFormatException) {
+                    numberFormat = true;
+                    break;
+                }
+                cause = cause.getCause();
+            }
+
+            if (numberFormat) {
+                sendError(resp, 400, "Возраст слишком большой или некорректный");
+            } else {
+                sendError(resp, 400, "Некорректные данные существа");
+            }
         }
     }
 
@@ -113,8 +123,10 @@ public class BookCreatureServlet extends HttpServlet {
             creature.setId(id);
 
             service.updateCreature(creature);
-
             resp.setStatus(200);
+
+        } catch (NumberFormatException e) {
+            sendError(resp, 400, "Возраст слишком большой или некорректный");
         } catch (IllegalArgumentException e) {
             sendError(resp, 400, e.getMessage());
         } catch (Exception e) {

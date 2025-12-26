@@ -41,15 +41,15 @@ public class BookCreatureRepository {
 
     public Optional<BookCreature> findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            BookCreature creature = session.get(BookCreature.class, id);
+            // === ВАЖНО: Hibernate 6 — используем find вместо get ===
+            BookCreature creature = session.find(BookCreature.class, id);
             return Optional.ofNullable(creature);
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при поиске BookCreature по id=" + id, e);
         }
     }
 
-
-    public List<BookCreature> findAll() { // получаем всех сущкств
+    public List<BookCreature> findAll() { // получаем всех существ
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM BookCreature", BookCreature.class)
                     .getResultList();
@@ -91,9 +91,10 @@ public class BookCreatureRepository {
             session = HibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
 
-            BookCreature creature = session.get(BookCreature.class, id);
+            // === ТУТ ТОЖЕ: find вместо get ===
+            BookCreature creature = session.find(BookCreature.class, id);
             if (creature != null) {
-                session.remove(creature);
+                session.remove(creature);   // в Hibernate 6 ок
             }
 
             tx.commit();

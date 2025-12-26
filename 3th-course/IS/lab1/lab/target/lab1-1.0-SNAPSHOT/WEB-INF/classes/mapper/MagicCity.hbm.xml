@@ -17,13 +17,12 @@
 
         <property name="population" column="population" type="long" not-null="true"/>
 
-        <!-- !!! поменяли тип на ZonedDateTimeType -->
         <property name="establishmentDate"
                   column="establishment_date"
                   type="org.hibernate.type.ZonedDateTimeType"
                   not-null="false"/>
 
-        <!-- !!! enum так же, как creatureType -->
+        <!-- enum так же, как creatureType -->
         <property name="governor" column="governor" not-null="false" length="20">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">ru.itmo.model.util.BookCreatureType</param>

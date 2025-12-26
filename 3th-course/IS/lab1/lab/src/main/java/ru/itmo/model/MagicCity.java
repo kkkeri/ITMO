@@ -30,8 +30,12 @@ public class MagicCity {
 
     public String getName() { return name; }
     public void setName(String name) {
-        if (name == null || name.trim().isEmpty())
-            throw new IllegalArgumentException("Имя города не может быть пустым");
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Название не может быть пустым");
+        }
+        if (name.length() > 80) {
+            throw new IllegalArgumentException("Название не должно быть длиннее 80 символов");
+        }
         this.name = name;
     }
 

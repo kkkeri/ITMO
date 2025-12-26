@@ -280,38 +280,58 @@ function cancelCityEdit() {
 }
 
 // сохраняем город
-
 async function saveCity() {
-    const name = document.getElementById('cityName').value.trim();
-    const area = parseInt(document.getElementById('cityArea').value, 10);
-    const population = parseInt(document.getElementById('cityPopulation').value, 10);
+    const nameRaw = document.getElementById('cityName').value.trim();
+    const areaRaw = document.getElementById('cityArea').value.trim();
+    const populationRaw = document.getElementById('cityPopulation').value.trim();
     const capital = document.getElementById('cityCapital').checked;
-    const densityStr = document.getElementById('cityDensity').value;
+    const densityRaw = document.getElementById('cityDensity').value.trim();
     let governorVal = document.getElementById('cityGovernor').value.trim();
 
-    if (!name) {
+    // --- Название ---
+    if (!nameRaw) {
         showCityFormError('Название города не может быть пустым');
         return;
     }
-    if (!Number.isFinite(area) || area <= 0) {
-        showCityFormError('Площадь должна быть положительным числом');
+    if (nameRaw.length > 80) {
+        showCityFormError('Название не должно быть длиннее 80 символов');
         return;
     }
-    if (!Number.isFinite(population) || population <= 0) {
-        showCityFormError('Население должно быть положительным числом');
+
+    // --- Площадь ---
+    if (!areaRaw) {
+        showCityFormError('Площадь обязательна');
         return;
     }
-    if (!densityStr) {
+    const area = parseInt(areaRaw, 10);
+    if (!Number.isFinite(area) || area <= 0 || !Number.isInteger(area)) {
+        showCityFormError('Площадь должна быть положительным целым числом');
+        return;
+    }
+
+    // --- Население ---
+    if (!populationRaw) {
+        showCityFormError('Население обязательно');
+        return;
+    }
+    const population = parseInt(populationRaw, 10);
+    if (!Number.isFinite(population) || population <= 0 || !Number.isInteger(population)) {
+        showCityFormError('Население должно быть положительным целым числом');
+        return;
+    }
+
+    // --- Плотность населения ---
+    if (!densityRaw) {
         showCityFormError('Плотность населения обязательна');
         return;
     }
-    const density = parseFloat(densityStr);
+    const density = parseFloat(densityRaw);
     if (!Number.isFinite(density) || density <= 0) {
         showCityFormError('Плотность населения должна быть положительным числом');
         return;
     }
 
-    // губернатор - ENUM в верх-регистр (и проверка)
+    // --- Губернатор (ENUM) ---
     governorVal = governorVal ? governorVal.toUpperCase() : null;
     const allowedTypes = ['HOBBIT', 'ELF', 'HUMAN', 'GOLLUM'];
     if (governorVal && !allowedTypes.includes(governorVal)) {
@@ -320,12 +340,13 @@ async function saveCity() {
     }
 
     const payload = {
-        name: name,
+        name: nameRaw,
         area: area,
         population: population,
         capital: capital,
         populationDensity: density,
-        governor: governorVal     // establishmentDate специально НЕ передаём
+        governor: governorVal
+        // establishmentDate специально НЕ отправляем — её хранит и защищает сервер
     };
 
     try {

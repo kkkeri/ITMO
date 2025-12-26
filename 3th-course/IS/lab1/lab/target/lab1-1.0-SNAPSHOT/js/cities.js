@@ -12,18 +12,17 @@ let cityPageSize = 10;
 
 // сортировка
 let citySortField = null; // 'id','name','governor','area','population','capital','density','establishmentDate'
-let citySortDir = 'asc';  // 'asc' | 'desc'
+let citySortDir = 'asc';
 
-/* ====== Хелпер для красивой даты ====== */
+// форматирование даты
 function formatCityDate(raw) {
     if (!raw) return '';
-    // "2025-11-21T00:07:15.123+00:00[UTC]" -> "2025-11-21 00:07"
     const noZone = raw.split('[')[0];
     const replaced = noZone.replace('T', ' ');
     return replaced.substring(0, 16);
 }
 
-/* ====== Загрузка городов ====== */
+// загружаем города
 
 async function loadCities() {
     try {
@@ -41,7 +40,7 @@ async function loadCities() {
     }
 }
 
-/* ====== Сортировка ====== */
+// сортировка
 
 function sortCitiesBy(field) {
     if (citySortField === field) {
@@ -107,7 +106,7 @@ function compareCities(a, b) {
     return citySortDir === 'asc' ? cmp : -cmp;
 }
 
-/* ====== Отрисовка таблицы с пагинацией ====== */
+// табличка с учетом пагинации
 
 function renderCitiesTable() {
     const tbody = document.getElementById('citiesTableBody');
@@ -170,7 +169,7 @@ function updateCityPaginationInfo(totalPages) {
     if (next) next.disabled = cityCurrentPage >= totalPages;
 }
 
-/* ====== Фильтры ====== */
+// фильтры
 
 function applyCityFilters() {
     const nameInput = document.getElementById('cityNameFilter');
@@ -219,7 +218,7 @@ function resetCityFilter() {
     resetCityFilters();
 }
 
-/* ====== Форма создания / редактирования ====== */
+// форма создания и редакт
 
 function startCreateCity() {
     editingCityId = null;
@@ -239,7 +238,6 @@ function startEditCity(id) {
     document.getElementById('cityArea').value = city.area;
     document.getElementById('cityPopulation').value = city.population;
 
-    // Для input type="datetime-local" нужны только "YYYY-MM-DDTHH:MM"
     if (city.establishmentDate) {
         const noZone = city.establishmentDate.split('[')[0];
         document.getElementById('cityEstablishmentDate').value = noZone.substring(0, 16);
@@ -281,39 +279,59 @@ function cancelCityEdit() {
     clearCityForm();
 }
 
-/* ====== Сохранение города ====== */
-
+// сохраняем город
 async function saveCity() {
-    const name = document.getElementById('cityName').value.trim();
-    const area = parseInt(document.getElementById('cityArea').value, 10);
-    const population = parseInt(document.getElementById('cityPopulation').value, 10);
+    const nameRaw = document.getElementById('cityName').value.trim();
+    const areaRaw = document.getElementById('cityArea').value.trim();
+    const populationRaw = document.getElementById('cityPopulation').value.trim();
     const capital = document.getElementById('cityCapital').checked;
-    const densityStr = document.getElementById('cityDensity').value;
+    const densityRaw = document.getElementById('cityDensity').value.trim();
     let governorVal = document.getElementById('cityGovernor').value.trim();
 
-    if (!name) {
+    // --- Название ---
+    if (!nameRaw) {
         showCityFormError('Название города не может быть пустым');
         return;
     }
-    if (!Number.isFinite(area) || area <= 0) {
-        showCityFormError('Площадь должна быть положительным числом');
+    if (nameRaw.length > 80) {
+        showCityFormError('Название не должно быть длиннее 80 символов');
         return;
     }
-    if (!Number.isFinite(population) || population <= 0) {
-        showCityFormError('Население должно быть положительным числом');
+
+    // --- Площадь ---
+    if (!areaRaw) {
+        showCityFormError('Площадь обязательна');
         return;
     }
-    if (!densityStr) {
+    const area = parseInt(areaRaw, 10);
+    if (!Number.isFinite(area) || area <= 0 || !Number.isInteger(area)) {
+        showCityFormError('Площадь должна быть положительным целым числом');
+        return;
+    }
+
+    // --- Население ---
+    if (!populationRaw) {
+        showCityFormError('Население обязательно');
+        return;
+    }
+    const population = parseInt(populationRaw, 10);
+    if (!Number.isFinite(population) || population <= 0 || !Number.isInteger(population)) {
+        showCityFormError('Население должно быть положительным целым числом');
+        return;
+    }
+
+    // --- Плотность населения ---
+    if (!densityRaw) {
         showCityFormError('Плотность населения обязательна');
         return;
     }
-    const density = parseFloat(densityStr);
+    const density = parseFloat(densityRaw);
     if (!Number.isFinite(density) || density <= 0) {
         showCityFormError('Плотность населения должна быть положительным числом');
         return;
     }
 
-    // губернатор -> ENUM в upper-case (и проверка)
+    // --- Губернатор (ENUM) ---
     governorVal = governorVal ? governorVal.toUpperCase() : null;
     const allowedTypes = ['HOBBIT', 'ELF', 'HUMAN', 'GOLLUM'];
     if (governorVal && !allowedTypes.includes(governorVal)) {
@@ -322,12 +340,13 @@ async function saveCity() {
     }
 
     const payload = {
-        name: name,
+        name: nameRaw,
         area: area,
         population: population,
         capital: capital,
         populationDensity: density,
-        governor: governorVal     // establishmentDate специально НЕ передаём
+        governor: governorVal
+        // establishmentDate специально НЕ отправляем — её хранит и защищает сервер
     };
 
     try {
@@ -364,7 +383,7 @@ async function saveCity() {
 }
 
 
-/* ====== Удаление города с перепривязкой ====== */
+//удаление с перепривязкой
 
 function prepareDeleteCity(id) {
     deleteCityId = id;
@@ -425,7 +444,7 @@ async function confirmDeleteCity() {
     }
 }
 
-/* ====== Ошибки ====== */
+// ошиьки
 
 function showCityFormError(msg) {
     const el = document.getElementById('cityFormError');
@@ -469,7 +488,7 @@ function hideCityGlobalError() {
     el.style.display = 'none';
 }
 
-/* ====== Инициализация ====== */
+// инициализация
 
 window.addEventListener('load', () => {
     const prev = document.getElementById('cityPrevPage');
@@ -507,6 +526,7 @@ window.addEventListener('load', () => {
 
     loadCities();
 
+    // автообновление
     setInterval(() => {
         const editSection = document.getElementById('cityEditSection');
         const deleteSection = document.getElementById('cityDeleteSection');

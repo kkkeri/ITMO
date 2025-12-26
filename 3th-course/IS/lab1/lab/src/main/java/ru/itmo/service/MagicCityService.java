@@ -34,9 +34,17 @@ public class MagicCityService {
         return cityRepository.findAll();
     }
 
-    public void updateCity(MagicCity city) {
-        cityRepository.update(city);
+    public void updateCity(MagicCity updated) {
+        MagicCity existing = cityRepository.findById(updated.getId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Город с id=" + updated.getId() + " не найден"));
+
+        updated.setEstablishmentDate(existing.getEstablishmentDate());
+
+        cityRepository.update(updated);
     }
+
+    // удалить город и перепривязать существ на другой город (или отвязать, если newCityId == null).
 
     public void deleteCityWithReassignment(Long cityId, Long newCityId) {
         MagicCity oldCity = cityRepository.findById(cityId)
@@ -55,10 +63,35 @@ public class MagicCityService {
             creatureRepository.update(creature);
         }
 
-        cityRepository.delete(cityId);
+        cityRepository.delete(oldCity.getId());
     }
 
     public List<MagicCity> getElfCities() {
         return cityRepository.findByGovernor(BookCreatureType.ELF);
+    }
+
+    //Спецоперация: уничтожить все города эльфов. Перед удалением отвязываем всех существ от этих городов.
+
+    public int destroyElfCities() {
+        List<MagicCity> elfCities = getElfCities();
+        if (elfCities.isEmpty()) {
+            return 0;
+        }
+
+        for (MagicCity city : elfCities) {
+            Long cityId = city.getId();
+
+            // находим всех существ, живущих в этом городе
+            List<BookCreature> creatures = creatureRepository.findByCityId(cityId);
+            for (BookCreature creature : creatures) {
+                creature.setCreatureLocation(null); // отвязываем город
+                creatureRepository.update(creature);
+            }
+
+            // удаляем сам город
+            cityRepository.delete(cityId);
+        }
+
+        return elfCities.size();
     }
 }
