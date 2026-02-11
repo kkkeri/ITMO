@@ -16,4 +16,4 @@ Here, you can find various subjects and related coursework. Each subject has its
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 The project is available with open source under the terms of [license CC BY-NC-SA 4.0](./LICENSE).<br>
-*Copyright 2025 by Kudiyash Egor*<br>
+*Copyright 2025 by kkkeri*<br>
