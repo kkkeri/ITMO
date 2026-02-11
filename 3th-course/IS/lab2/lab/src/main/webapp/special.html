@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Специальные операции</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="js/special.js?v=2"></script>
+</head>
+<body>
+
+<header>
+    <h1>Специальные операции</h1>
+</header>
+
+<main>
+
+    <nav style="margin-bottom: 15px;">
+        <a href="creatures.html">⟵ Существа</a>
+        |
+        <a href="cities.html">Города</a>
+    </nav>
+
+    <!-- общая зона для ошибок -->
+    <div id="specialGlobalError" class="error" style="display:none;"></div>
+    <div id="specialGlobalInfo" class="info" style="display:none;"></div>
+
+    <!-- существо с максимальным именем -->
+    <section class="card">
+        <h2>Существо с максимальным именем</h2>
+        <p>
+            Возвращает одно (любое) существо, у которого значение поля
+            <strong>«Имя»</strong> максимальное по алфавиту.
+        </p>
+        <button class="primary" id="btnMaxName">Найти</button>
+        <pre id="resultMaxName" class="result-block"></pre>
+    </section>
+
+    <!-- количество существ с кольцом слабее заданного -->
+    <section class="card">
+        <h2>Количество существ с кольцом слабее заданного</h2>
+        <p>
+            Считает, сколько существ имеют кольцо, у которого
+            <strong>сила кольца</strong> меньше указанного числа.
+        </p>
+
+        <div class="form-row">
+            <label for="inputRingMaxPower">Максимальная сила кольца:</label>
+            <input id="inputRingMaxPower" type="number" min="1" step="1">
+        </div>
+
+        <button class="primary" id="btnCountRing">Посчитать</button>
+        <pre id="resultCountRing" class="result-block"></pre>
+    </section>
+
+    <!-- существа с уровнем атаки выше заданного -->
+    <section class="card">
+        <h2>Существа с уровнем атаки выше заданного</h2>
+        <p>
+            Возвращает массив существ, у которых
+            <strong>уровень атаки</strong> больше указанного значения.
+        </p>
+
+        <div class="form-row">
+            <label for="inputMinAttack">Минимальный уровень атаки:</label>
+            <input id="inputMinAttack" type="number" min="0" step="0.1">
+        </div>
+
+        <button class="primary" id="btnAttackMore">Найти существ</button>
+        <pre id="resultAttackMore" class="result-block"></pre>
+    </section>
+
+    <!-- существо с самым сильным кольцом -->
+    <section class="card">
+        <h2>Персонаж с самым сильным кольцом</h2>
+        <p>
+            Возвращает существо, у которого
+            <strong>сила кольца</strong> максимальная.
+        </p>
+
+        <button class="primary" id="btnStrongestRing">Найти</button>
+        <pre id="resultStrongestRing" class="result-block"></pre>
+    </section>
+
+    <!-- уничтожить города эльфов -->
+    <section class="card">
+        <h2>Уничтожить города эльфов</h2>
+        <p>
+            Удаляет все города, у которых
+            <strong>губернатор</strong> имеет тип <strong>ELF</strong>. Перед удалением существа,
+            живущие в этих городах, отвязываются от них.
+        </p>
+
+        <button class="danger" id="btnDestroyElfCities">
+            Уничтожить города эльфов
+        </button>
+
+        <pre id="resultDestroyElfCities" class="result-block"></pre>
+    </section>
+
+</main>
+
+</body>
+</html>

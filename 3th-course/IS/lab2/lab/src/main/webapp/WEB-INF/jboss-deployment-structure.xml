@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+    <deployment>
+        <!-- Отключаем подсистему JPA, чтобы WildFly не пытался запускать
+             встроенный Hibernate JPA-провайдер и искать persistence.xml -->
+        <exclude-subsystems>
+            <subsystem name="jpa"/>
+            <subsystem name="bean-validation"/>
+        </exclude-subsystems>
+
+        <dependencies>
+            <module name="org.hibernate" services="import"/>
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>

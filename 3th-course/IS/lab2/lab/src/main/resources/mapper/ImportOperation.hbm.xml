@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="ru.itmo.model">
+
+    <class name="ImportOperation" table="import_operation">
+
+        <id name="id" column="id">
+            <generator class="identity"/>
+        </id>
+
+        <property name="username" column="username" not-null="true"/>
+        <property name="role" column="role" not-null="true"/>
+
+        <property name="entityType" column="entity_type" not-null="true"/>
+
+        <!-- enum как строка (Hibernate 6: params должны лежать внутри <type>) -->
+        <property name="status" column="status" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">ru.itmo.model.util.ImportStatus</param>
+                <param name="useNamed">true</param>
+            </type>
+        </property>
+
+        <property name="createdAt" column="created_at" not-null="true"/>
+        <property name="finishedAt" column="finished_at"/>
+
+        <property name="insertedCount" column="inserted_count"/>
+        <property name="errorMessage" column="error_message" type="text"/>
+
+    </class>
+
+</hibernate-mapping>

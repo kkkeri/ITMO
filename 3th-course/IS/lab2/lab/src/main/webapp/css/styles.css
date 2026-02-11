@@ -1,0 +1,417 @@
+/* ===== Общие настройки и шрифты ===== */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Roboto:wght@300;400;500&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background:
+            radial-gradient(circle at 0 0, rgba(255, 215, 0, 0.07), transparent 55%),
+            radial-gradient(circle at 100% 100%, rgba(0, 100, 0, 0.15), #050608 80%);
+    color: #f3f3f3;
+}
+
+/* Лёгкая «бумажная» тень вокруг основного блока */
+main {
+    max-width: 1100px;
+    margin: 30px auto 40px;
+    background: rgba(15, 15, 18, 0.94);
+    border-radius: 16px;
+    padding: 24px 26px 28px;
+    box-shadow:
+            0 0 0 1px rgba(212, 175, 55, 0.18),
+            0 18px 45px rgba(0, 0, 0, 0.7);
+}
+
+/* ===== Шапка ===== */
+
+header {
+    background: linear-gradient(90deg, #1b1f24 0%, #1d1306 40%, #1b1f24 100%);
+    border-bottom: 2px solid rgba(212, 175, 55, 0.8);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8);
+    padding: 14px 0 16px;
+}
+
+header h1 {
+    margin: 0 auto;
+    max-width: 1100px;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #f8f3d4;
+    text-shadow:
+            0 0 4px rgba(0, 0, 0, 0.8),
+            0 0 18px rgba(212, 175, 55, 0.85);
+}
+
+/* ===== Текстовые блоки / заголовки секций ===== */
+
+h2, h3 {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.04em;
+    color: #f6e7b1;
+    margin-top: 8px;
+    margin-bottom: 14px;
+}
+
+/* ===== Фильтры ===== */
+
+.filter-block {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+    margin-bottom: 8px;
+}
+
+.filter-block label {
+    font-size: 14px;
+    color: #d8d0ad;
+}
+
+.filter-block input,
+.filter-block select {
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    background: rgba(12, 12, 15, 0.9);
+    color: #f4f4f4;
+    font-size: 14px;
+}
+
+.filter-block input::placeholder {
+    color: #777;
+}
+
+/* ===== Таблицы ===== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+    font-size: 14px;
+    background: rgba(10, 10, 12, 0.95);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+thead {
+    background: linear-gradient(90deg, #1b1f24, #302010);
+}
+
+th, td {
+    padding: 8px 10px;
+    text-align: left;
+}
+
+th {
+    font-weight: 500;
+    font-size: 13px;
+    color: #f0e6c8;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.6);
+    white-space: nowrap;
+}
+
+td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: #e5e5e5;
+}
+
+/* зебра-строки */
+tbody tr:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.01);
+}
+
+tbody tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+/* подсветка строки */
+tbody tr:hover {
+    background: radial-gradient(circle at 0 50%, rgba(212, 175, 55, 0.13), transparent 60%),
+    rgba(38, 34, 23, 0.95);
+}
+
+/* сортируемые заголовки */
+th.sortable {
+    cursor: pointer;
+    position: relative;
+}
+
+th.sortable::after {
+    content: '⇅';
+    font-size: 11px;
+    opacity: 0.4;
+    margin-left: 4px;
+}
+
+/* ===== Кнопки ===== */
+
+button {
+    border: none;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: inherit;
+    transition: all 0.18s ease-out;
+}
+
+/* Кнопка "магического" золотого цвета */
+button.primary {
+    background: radial-gradient(circle at 30% 0, #fff9d7 0, #e0b84c 40%, #a67c00 100%);
+    color: #20160a;
+    box-shadow:
+            0 0 10px rgba(212, 175, 55, 0.7),
+            0 3px 10px rgba(0, 0, 0, 0.7);
+}
+
+button.primary:hover {
+    transform: translateY(-1px);
+    box-shadow:
+            0 0 14px rgba(255, 215, 0, 0.9),
+            0 4px 14px rgba(0, 0, 0, 0.85);
+}
+
+/* Обычная вторичная кнопка */
+button:not(.primary):not(.danger) {
+    background: rgba(40, 40, 46, 0.9);
+    color: #f0e6c8;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+button:not(.primary):not(.danger):hover {
+    background: rgba(60, 60, 70, 0.95);
+}
+
+/* Опасная красная кнопка */
+button.danger {
+    background: linear-gradient(135deg, #7d1414, #c02020);
+    color: #ffecec;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+button.danger:hover {
+    background: linear-gradient(135deg, #961010, #e03030);
+    box-shadow:
+            0 0 12px rgba(255, 80, 80, 0.65),
+            0 3px 10px rgba(0, 0, 0, 0.85);
+}
+
+/* ===== Пагинация ===== */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    font-size: 14px;
+    color: #d8d0ad;
+}
+
+.pagination select {
+    margin-left: 4px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    background: rgba(10, 10, 12, 0.9);
+    color: #f4f4f4;
+}
+
+/* ===== Модалки создания / редактирования ===== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0, rgba(255, 215, 0, 0.18), rgba(0,0,0,0.92));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.modal-window {
+    width: 440px;
+    max-width: 95vw;
+    background: radial-gradient(circle at 0 0, rgba(212,175,55,0.15), transparent 55%),
+    #151417;
+    border-radius: 16px;
+    padding: 18px 20px 16px;
+    box-shadow:
+            0 0 0 1px rgba(212, 175, 55, 0.5),
+            0 18px 40px rgba(0, 0, 0, 0.9);
+}
+
+.modal-window h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.form-row label {
+    flex: 0 0 190px;
+    font-size: 14px;
+    color: #e2d6b3;
+}
+
+.form-row input,
+.form-row select {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.55);
+    background: rgba(10, 10, 12, 0.96);
+    color: #f4f4f4;
+}
+
+/* ===== Главная страница ===== */
+
+.home-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* фон уже задан общим body, так что не трогаем */
+}
+
+.home-wrapper {
+    text-align: center;
+    max-width: 900px;
+    padding: 40px 20px;
+    background: linear-gradient(
+            to bottom right,
+            rgba(0, 0, 0, 0.65),
+            rgba(0, 0, 0, 0.4)
+    );
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 215, 128, 0.25);
+}
+
+.home-title {
+    font-size: 2.4rem;
+    margin-bottom: 30px;
+}
+
+/* Кнопки на главной */
+.home-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 26px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 215, 128, 0.4);
+    text-decoration: none;
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease,
+    background 0.15s ease, color 0.15s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #f1c15c, #c48a2b);
+    color: #1b1007;
+    font-weight: 600;
+}
+
+.btn-secondary {
+    background: rgba(0, 0, 0, 0.5);
+    color: #f5f1e6;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px rgba(241, 193, 92, 0.5);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 0 5px rgba(241, 193, 92, 0.4);
+}
+
+/* ===== Ошибки ===== */
+
+.error {
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(120, 22, 22, 0.9);
+    border: 1px solid rgba(255, 120, 120, 0.7);
+    color: #ffecec;
+    font-size: 14px;
+}
+
+/* ===== Блоки со спец-операциями (если есть) ===== */
+
+.special-card {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(20, 24, 18, 0.95), rgba(26, 19, 10, 0.95));
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.7);
+}
+
+/* JSON-вывод в спец-операциях */
+.pre-json {
+    margin-top: 10px;
+    background: #050506;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    color: #f4f4f4;
+    overflow-x: auto;
+}
+
+/* ===== Адаптив ===== */
+
+@media (max-width: 768px) {
+    main {
+        margin: 15px auto 25px;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .filter-block {
+        align-items: flex-start;
+    }
+
+    .form-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-row label {
+        flex: none;
+    }
+
+    header h1 {
+        padding: 0 12px;
+        font-size: 20px;
+        text-align: center;
+    }
+}

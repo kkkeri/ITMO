@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="ru.itmo.model">
+
+    <!-- главная таблица для BookCreature -->
+    <class name="BookCreature" table="book_creature">
+
+        <!-- id (генерируется автоматически, > 0, уникальный) -->
+        <id name="id" column="id">
+            <generator class="identity"/> <!-- PostgreSQL serial / identity -->
+        </id>
+
+        <!-- name (строка, не null, не пустая) -->
+        <property name="name" column="name" not-null="true" length="100"/>
+
+        <!-- coordinates (делаем встроенным компонентом) -->
+        <component name="coordinates" class="Coordinates">
+            <property name="x" column="coord_x" type="double"/>
+            <property name="y" column="coord_y" type="float" not-null="true"/>
+        </component>
+
+        <!-- creationDate (дата создания, не null, генерируется автоматически) -->
+        <property name="creationDate" column="creation_date" type="org.hibernate.type.ZonedDateTimeType" not-null="true"/>
+
+        <!-- age (long > 0, не null) -->
+        <property name="age" column="age" type="long" not-null="true"/>
+
+        <!-- creatureType (enum, храним как строку) -->
+        <property name="creatureType" column="creature_type" not-null="true" length="20">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">ru.itmo.model.util.BookCreatureType</param>
+                <param name="useNamed">true</param> <!-- Сохраняем строковые значения -->
+            </type>
+        </property>
+
+        <!-- связь с MagicCity (может быть null, отдельная таблица) -->
+        <many-to-one name="creatureLocation"
+                     class="MagicCity"
+                     column="magic_city_id"
+                     not-null="false"
+                     cascade="none"
+                     fetch="join"
+                     lazy="false"/>
+
+        <!-- attackLevel (float > 0, не null) -->
+        <property name="attackLevel" column="attack_level" type="float" not-null="true"/>
+
+        <!-- ring (делаем встроенным компонентом, может быть null) -->
+        <component name="ring" class="Ring">
+            <property name="name" column="ring_name" not-null="false" length="80"/>
+            <property name="power" column="ring_power" type="integer" not-null="false"/>
+        </component>
+
+    </class>
+</hibernate-mapping>
